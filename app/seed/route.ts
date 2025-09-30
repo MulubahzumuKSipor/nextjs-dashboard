@@ -30,7 +30,7 @@ async function seedUsers() {
 }
 
 async function seedInvoices() {
-  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+  
 
   await sql`
     CREATE TABLE IF NOT EXISTS invoices (
@@ -56,7 +56,7 @@ async function seedInvoices() {
 }
 
 async function seedCustomers() {
-  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+  
 
   await sql`
     CREATE TABLE IF NOT EXISTS customers (
@@ -103,12 +103,13 @@ async function seedRevenue() {
 
 export async function GET() {
   try {
-    const result = await sql.begin((sql) => [
-      seedUsers(),
-      seedCustomers(),
-      seedInvoices(),
-      seedRevenue(),
-    ]);
+    const result = await sql.begin(async (sql) => {
+    await seedUsers();
+    await seedCustomers();
+    await seedInvoices();
+    await seedRevenue();
+    return 'Seeding completed';});
+
 
     return Response.json({ message: 'Database seeded successfully' });
   } catch (error) {
