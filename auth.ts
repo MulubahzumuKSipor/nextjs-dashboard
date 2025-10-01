@@ -30,10 +30,8 @@ export const { auth, signIn, signOut } = NextAuth({
           const { email, password } = parsedCredentials.data;
           const user = await getUser(email);
           if (!user) return null;
-          if (passwordMatch) return user;
-        //   if (user && (await bcrypt.compare(password, user.password))) {
-        //     return user;
-        //   }
+          const passwordsMatch = await bcrypt.compare(password, user.password);
+          if (passwordsMatch) return user;
         }
         throw new Error('Invalid credentials');
       },
